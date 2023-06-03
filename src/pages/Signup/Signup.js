@@ -96,6 +96,20 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
+
+    authService
+      .register(dataObj)
+      .then((response) => {
+        console.log("response data register ==>> ", response);
+        setIsLoading(false);
+        toast(response?.data?.message, { type: "success" });
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast(error?.response?.data?.message, { type: "error" });
+        setIsLoading(false);
+      });
   };
 
   const handleInputChange = (e) => {
@@ -284,14 +298,27 @@ const Signup = () => {
             />
 
             {/* ================= Signup button ================= */}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign up
-            </Button>
+
+            {isLoading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Loader />
+              </div>
+            ) : (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign up
+              </Button>
+            )}
 
             <Grid container justifyContent="center" alignItems="center">
               <Grid item>
