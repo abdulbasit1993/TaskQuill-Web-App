@@ -32,15 +32,11 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("submit form...");
-
-    // TODO testing auth flow
-    localStorage.setItem("login", true);
-    navigate("/");
   };
 
   useEffect(() => {
-    let login = localStorage.getItem("login");
-    if (login) {
+    let token = localStorage.getItem("token");
+    if (token) {
       navigate("/");
     }
   }, []);

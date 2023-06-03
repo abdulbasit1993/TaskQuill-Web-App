@@ -18,13 +18,29 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { authService } from "../../services/authService";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../components/Loader/Loader";
 
 const defaultTheme = createTheme();
 
+const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 const Login = () => {
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleInputChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -32,16 +48,54 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("submit form...");
 
-    // TODO testing auth flow
-    localStorage.setItem("login", true);
-    navigate("/");
+    setIsLoading(true);
+
+    let email = data?.email.trim();
+    let password = data?.password.trim();
+
+    const dataObj = {
+      email: email,
+      password: password,
+    };
+
+    if (!email) {
+      toast("Please enter your email", { type: "error" });
+      setIsLoading(false);
+      return;
+    }
+
+    if (!password) {
+      toast("Please enter your password", { type: "error" });
+      setIsLoading(false);
+      return;
+    }
+
+    if (!data?.email.match(emailRegex)) {
+      toast("Please enter a valid email", { type: "error" });
+      setIsLoading(false);
+      return;
+    }
+
+    authService
+      .login(dataObj)
+      .then((response) => {
+        console.log("response data login ==>> ", response);
+        setIsLoading(false);
+        localStorage.setItem("token", response?.data?.token);
+        toast(response?.data?.message, { type: "success" });
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast(error?.response?.data?.message, { type: "error" });
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
-    let login = localStorage.getItem("login");
-    if (login) {
+    let token = localStorage.getItem("token");
+    if (token) {
       navigate("/");
     }
   }, []);
@@ -70,15 +124,21 @@ const Login = () => {
             Login
           </Typography>
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             {/* ================= Email Input Field ================= */}
             <TextField
               margin="normal"
               required
               fullWidth
               id="email"
-              label="Email Address"
               name="email"
+              label="Email Address"
+              onChange={handleInputChange}
               autoComplete="email"
               autoFocus
             />
@@ -88,10 +148,11 @@ const Login = () => {
               margin="normal"
               required
               fullWidth
+              id="password"
               name="password"
               label="Password"
+              onChange={handleInputChange}
               type={showPassword ? "text" : "password"}
-              id="password"
               autoComplete="current-password"
               InputProps={{
                 endAdornment: (
@@ -116,14 +177,27 @@ const Login = () => {
             />
 
             {/* ================= Login button ================= */}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Login
-            </Button>
+
+            {isLoading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Loader />
+              </div>
+            ) : (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Login
+              </Button>
+            )}
 
             <Grid container>
               <Grid item xs>
