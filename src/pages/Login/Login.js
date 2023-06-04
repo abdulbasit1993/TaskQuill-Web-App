@@ -27,7 +27,7 @@ const defaultTheme = createTheme();
 
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-const Login = () => {
+const Login = ({ onAuthenticate }) => {
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -84,6 +84,7 @@ const Login = () => {
         setIsLoading(false);
         localStorage.setItem("token", response?.data?.token);
         toast(response?.data?.message, { type: "success" });
+        onAuthenticate(true);
         navigate("/");
       })
       .catch((error) => {
@@ -96,6 +97,7 @@ const Login = () => {
   useEffect(() => {
     let token = localStorage.getItem("token");
     if (token) {
+      onAuthenticate(true);
       navigate("/");
     }
   }, []);
