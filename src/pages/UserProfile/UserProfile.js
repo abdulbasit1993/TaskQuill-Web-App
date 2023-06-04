@@ -1,16 +1,16 @@
 import React from "react";
 import { Box } from "@mui/material";
 import Header from "../../components/Header/Header";
-import "./Home.css";
+import "./UserProfile.css";
 
-const Home = () => {
+const UserProfile = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="HOME" subtitle="Welcome to TaskQuill" />
+        <Header title="USER PROFILE" subtitle="" />
       </Box>
     </Box>
   );
 };
 
-export default Home;
+export default UserProfile;
