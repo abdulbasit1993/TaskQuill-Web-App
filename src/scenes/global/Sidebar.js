@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import PersonOutlined from "@mui/icons-material/PersonOutlined";
 import { MenuOutlined } from "@mui/icons-material";
 import userAvatar from "../../assets/images/user-avatar.png";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "../../redux/actions/userAction";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   // const theme = useTheme();
@@ -28,8 +30,19 @@ const Sidebar = () => {
   // const theme = useTheme();
   // const colors = tokens(theme.palette.mode);
 
+  const dispatch = useDispatch();
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("User Profile");
+
+  const token = useSelector((state) => state.loginReducer.data.token);
+  const userData = useSelector((state) => state.userReducer.data.data);
+
+  console.log("userData from selector (sidebar) ===>> ", userData);
+
+  useEffect(() => {
+    dispatch(getUserProfile(token));
+  }, []);
 
   return (
     <Box
@@ -99,11 +112,13 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Username
+                  {userData
+                    ? userData?.firstName + " " + userData?.lastName
+                    : "Username"}
                 </Typography>
 
                 <Typography variant="h6" color={"blue"}>
-                  User type
+                  {userData ? userData?.roles[0] : "User type"}
                 </Typography>
               </Box>
             </Box>

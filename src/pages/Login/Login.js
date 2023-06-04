@@ -23,12 +23,17 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../components/Loader/Loader";
 import { colors } from "../../constants/colors";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../redux/actions/authAction";
+import { getUserProfile } from "../../redux/actions/userAction";
 
 const defaultTheme = createTheme();
 
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const Login = ({ onAuthenticate }) => {
+  const dispatch = useDispatch();
+
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -36,6 +41,13 @@ const Login = ({ onAuthenticate }) => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const loginData = useSelector((state) => state.loginReducer);
+  console.log("loginData from selector ==>> ", loginData);
+
+  const token = loginData?.data?.token;
+
+  console.log("token ==>> ", token);
 
   const navigate = useNavigate();
 
@@ -47,7 +59,7 @@ const Login = ({ onAuthenticate }) => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     setIsLoading(true);
@@ -78,30 +90,33 @@ const Login = ({ onAuthenticate }) => {
       return;
     }
 
-    authService
-      .login(dataObj)
-      .then((response) => {
-        console.log("response data login ==>> ", response);
-        setIsLoading(false);
-        localStorage.setItem("token", response?.data?.token);
-        toast(response?.data?.message, { type: "success" });
-        onAuthenticate(true);
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
-        toast(error?.response?.data?.message, { type: "error" });
-        setIsLoading(false);
-      });
+    await dispatch(loginUser(dataObj));
+
+    navigate("/");
   };
 
   useEffect(() => {
-    let token = localStorage.getItem("token");
-    if (token) {
+    const fetchUserProfile = async () => {
+      const token = loginData?.data?.token;
+
+      if (token) {
+        await dispatch(getUserProfile(token));
+        navigate("/");
+      }
+    };
+
+    if (loginData?.data?.token) {
       onAuthenticate(true);
-      navigate("/");
+      fetchUserProfile();
     }
-  }, []);
+  }, [loginData?.data?.token]);
+
+  // useEffect(() => {
+  //   if (token) {
+  //     onAuthenticate(true);
+  //     navigate("/");
+  //   }
+  // }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -181,7 +196,7 @@ const Login = ({ onAuthenticate }) => {
 
             {/* ================= Login button ================= */}
 
-            {isLoading ? (
+            {loginData?.isLoading ? (
               <div
                 style={{
                   display: "flex",
