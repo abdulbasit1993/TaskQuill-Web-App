@@ -3,9 +3,9 @@ body,
 #root,
 .app,
 .content {
-  /* height: 100%; */
-  /* width: 100%; */
-  background-color: #151828;
+  height: 100%;
+  width: 100%;
+  /* background-color: #151828; */
 }
 
 .app {

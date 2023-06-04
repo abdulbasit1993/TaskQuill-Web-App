@@ -22,6 +22,7 @@ import { authService } from "../../services/authService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../components/Loader/Loader";
+import { colors } from "../../constants/colors";
 
 const defaultTheme = createTheme();
 
