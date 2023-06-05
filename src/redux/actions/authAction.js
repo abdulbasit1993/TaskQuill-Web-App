@@ -1,15 +1,41 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { USER_LOGIN, USER_REGISTER } from "../../constants/actionTypes";
+import {
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAILURE,
+} from "../../constants/actionTypes";
+
 import { authService } from "../../services/authService";
 
-export const loginUser = createAsyncThunk(
-  USER_LOGIN,
-  async (data, { rejectWithValue }) => {
+const userLoginRequest = () => {
+  return {
+    type: USER_LOGIN_REQUEST,
+  };
+};
+
+const userLoginSuccess = (data) => {
+  return {
+    type: USER_LOGIN_SUCCESS,
+    data: data,
+  };
+};
+
+const userLoginFailure = (err) => {
+  return {
+    type: USER_LOGIN_FAILURE,
+    data: err,
+  };
+};
+
+export const loginUser = (data) => {
+  return async (dispatch) => {
+    dispatch(userLoginRequest());
+
     try {
-      const response = await authService.login(data);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
+      const res = await authService.login(data);
+      const response = res.data;
+      dispatch(userLoginSuccess(response));
+    } catch (err) {
+      dispatch(userLoginFailure(err));
     }
-  }
-);
+  };
+};
