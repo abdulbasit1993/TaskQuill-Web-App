@@ -25,7 +25,6 @@ import Loader from "../../components/Loader/Loader";
 import { colors } from "../../constants/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/actions/authAction";
-import { getUserProfile } from "../../redux/actions/userAction";
 
 const defaultTheme = createTheme();
 
@@ -40,14 +39,16 @@ const Login = ({ onAuthenticate }) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const loginData = useSelector((state) => state.loginReducer);
+  const loading = useSelector((state) => state.loginReducer.loading);
+
+  console.log("loading state ===>> ", loading);
+
+  const loginData = useSelector((state) => state.loginReducer.data);
   console.log("loginData from selector ==>> ", loginData);
 
-  const token = loginData?.data?.token;
-
-  console.log("token ==>> ", token);
+  const token = useSelector((state) => state.loginReducer.data.token);
+  console.log("token (login) ==>> ", token);
 
   const navigate = useNavigate();
 
@@ -62,8 +63,6 @@ const Login = ({ onAuthenticate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setIsLoading(true);
-
     let email = data?.email.trim();
     let password = data?.password.trim();
 
@@ -74,49 +73,35 @@ const Login = ({ onAuthenticate }) => {
 
     if (!email) {
       toast("Please enter your email", { type: "error" });
-      setIsLoading(false);
       return;
     }
 
     if (!password) {
       toast("Please enter your password", { type: "error" });
-      setIsLoading(false);
       return;
     }
 
     if (!data?.email.match(emailRegex)) {
       toast("Please enter a valid email", { type: "error" });
-      setIsLoading(false);
       return;
     }
 
     await dispatch(loginUser(dataObj));
 
+    handleNavigation();
+  };
+
+  const handleNavigation = () => {
+    console.log("handleNavigation called...");
     navigate("/");
   };
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      const token = loginData?.data?.token;
-
-      if (token) {
-        await dispatch(getUserProfile(token));
-        navigate("/");
-      }
-    };
-
-    if (loginData?.data?.token) {
+    if (token) {
       onAuthenticate(true);
-      fetchUserProfile();
+      navigate("/");
     }
-  }, [loginData?.data?.token]);
-
-  // useEffect(() => {
-  //   if (token) {
-  //     onAuthenticate(true);
-  //     navigate("/");
-  //   }
-  // }, []);
+  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -196,7 +181,7 @@ const Login = ({ onAuthenticate }) => {
 
             {/* ================= Login button ================= */}
 
-            {loginData?.isLoading ? (
+            {loading ? (
               <div
                 style={{
                   display: "flex",

@@ -21,12 +21,13 @@ import { authService } from "../../services/authService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../components/Loader/Loader";
+import { useSelector } from "react-redux";
 
 const defaultTheme = createTheme();
 
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-const Signup = () => {
+const Signup = ({ onAuthenticate }) => {
   const [data, setData] = useState({
     username: "",
     email: "",
@@ -43,6 +44,8 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const token = useSelector((state) => state.loginReducer.data.token);
 
   const navigate = useNavigate();
 
@@ -125,8 +128,8 @@ const Signup = () => {
   };
 
   useEffect(() => {
-    let token = localStorage.getItem("token");
     if (token) {
+      onAuthenticate(true);
       navigate("/");
     }
   }, []);

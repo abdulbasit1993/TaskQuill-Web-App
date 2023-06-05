@@ -6,7 +6,7 @@ function ProtectedRoute(props) {
   const { Component } = props;
   const navigate = useNavigate();
 
-  let token = useSelector((state) => state.loginReducer.data.token);
+  const token = useSelector((state) => state.loginReducer.data.token);
 
   useEffect(() => {
     if (!token) {

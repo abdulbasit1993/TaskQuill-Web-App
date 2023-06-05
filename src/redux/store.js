@@ -1,29 +1,27 @@
-import {
-  configureStore,
-  getDefaultMiddleware,
-  combineReducers,
-} from "@reduxjs/toolkit";
+import { createStore, applyMiddleware, compose } from "redux";
+import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { persistReducer, persistStore } from "redux-persist";
-import { logger } from "redux-logger";
-import loginReducer from "./slices/loginSlice";
-import userReducer from "./slices/userSlice";
+import thunk from "redux-thunk";
+import logger from "redux-logger";
+import rootReducer from "./reducers";
 
 const persistConfig = {
   key: "root",
   storage,
 };
 
-const rootReducer = combineReducers({
-  loginReducer: loginReducer,
-  userReducer: userReducer,
-});
-
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: [...getDefaultMiddleware(), logger],
-});
+const composeEnhancers =
+  (typeof window !== "undefined" &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
 
-export const persistor = persistStore(store);
+const middlewareList = [thunk, logger];
+
+const enhancer = composeEnhancers(applyMiddleware(...middlewareList));
+
+const store = createStore(persistedReducer, enhancer);
+const persistor = persistStore(store);
+
+export { store, persistor };

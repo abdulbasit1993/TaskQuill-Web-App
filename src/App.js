@@ -71,7 +71,10 @@ const App = () => {
                   path="/login"
                   element={<Login onAuthenticate={handleAuthentication} />}
                 />
-                <Route path="/signup" element={<Signup />} />
+                <Route
+                  path="/signup"
+                  element={<Signup onAuthenticate={handleAuthentication} />}
+                />
               </Routes>
             </NonAuthenticatedLayout>
           }
