@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import PersonOutlined from "@mui/icons-material/PersonOutlined";
 import { MenuOutlined } from "@mui/icons-material";
 import userAvatar from "../../assets/images/user-avatar.png";
+import { useSelector } from "react-redux";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   // const theme = useTheme();
@@ -30,6 +31,9 @@ const Sidebar = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("User Profile");
+
+  const userData = useSelector((state) => state.userProfileReducer.data.data);
+  // console.log("userData from selector ===>> ", userData);
 
   return (
     <Box
@@ -99,11 +103,13 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Username
+                  {userData
+                    ? userData?.firstName + " " + userData?.lastName
+                    : "Username"}
                 </Typography>
 
                 <Typography variant="h6" color={"blue"}>
-                  User type
+                  {userData ? userData?.roles[0] : "User type"}
                 </Typography>
               </Box>
             </Box>

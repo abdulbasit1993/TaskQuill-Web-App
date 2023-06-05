@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Home, Login, Signup, UserProfile } from "./pages/index";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
@@ -14,6 +14,17 @@ const App = () => {
   const handleAuthentication = (isAuthenticated) => {
     setAuthenticated(isAuthenticated);
   };
+
+  useEffect(() => {
+    const storedAuth = localStorage.getItem("authenticated");
+    if (storedAuth) {
+      setAuthenticated(JSON.parse(storedAuth));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("authenticated", JSON.stringify(authenticated));
+  }, []);
 
   const AuthenticatedLayout = ({ children }) => {
     return (

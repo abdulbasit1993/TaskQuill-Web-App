@@ -1,9 +1,7 @@
 html,
 body,
-#root,
-.app,
-.content {
-  height: 100%;
+#root {
+  height: 100% !important;
   width: 100%;
   /* background-color: #151828; */
 }
@@ -11,6 +9,14 @@ body,
 .app {
   display: flex;
   position: relative;
+  width: 100%;
+  height: 100% !important;
+}
+
+.content {
+  width: 100% !important;
+  height: 100%;
+  overflow: auto;
 }
 
 ::-webkit-scrollbar {
