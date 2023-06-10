@@ -47,6 +47,10 @@ const Login = ({ onAuthenticate }) => {
   const loginData = useSelector((state) => state.loginReducer.data);
   console.log("loginData from selector ==>> ", loginData);
 
+  const loginError = useSelector(
+    (state) => state?.loginReducer?.error?.response?.data
+  );
+
   const token = useSelector((state) => state.loginReducer.data.token);
   // console.log("token (login) ==>> ", token);
 
@@ -92,7 +96,10 @@ const Login = ({ onAuthenticate }) => {
   };
 
   const handleNavigation = () => {
-    console.log("handleNavigation called...");
+    if (loginError) {
+      toast(loginError?.message, { type: "error" });
+      return;
+    }
     navigate("/");
   };
 
