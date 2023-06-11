@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Home, Login, Signup, UserProfile, Tasks } from "./pages/index";
+import { Home, Login, Signup, UserProfile, Tasks, AddTask } from "./pages/index";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
@@ -74,6 +74,10 @@ const App = () => {
                 <Route
                   path="/tasks"
                   element={<ProtectedRoute Component={Tasks} />}
+                />
+                 <Route
+                  path="/tasks/add"
+                  element={<ProtectedRoute Component={AddTask} />}
                 />
               </Routes>
             </AuthenticatedLayout>

@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import "./Tasks.css";
 import moment from "moment";
 import Header from "../../components/Header/Header";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserTasks } from "../../redux/actions/taskAction";
+import { useNavigate } from "react-router-dom";
 
 const TaskTable = ({ data }) => {
   return (
@@ -35,6 +36,8 @@ const TaskTable = ({ data }) => {
 const Tasks = () => {
   const dispatch = useDispatch();
 
+  const navigate = useNavigate();
+
   const token = useSelector((state) => state.loginReducer.data.token);
 
   const taskData = useSelector((state) => state.taskReducer.data);
@@ -45,8 +48,10 @@ const Tasks = () => {
 
   return (
     <Box m="20px" sx={{ backgroundColor: "#151828" }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display="flex" justifyContent="space-between" alignItems="center" sx={{mb: 6}}>
         <Header title="TASKS" subtitle="" />
+
+        <Button variant="outlined" sx={{color: '#FFF', border: '1px solid #FFF'}} onClick={() => navigate('/tasks/add')}>Add Task</Button>
       </Box>
 
       <Box>
