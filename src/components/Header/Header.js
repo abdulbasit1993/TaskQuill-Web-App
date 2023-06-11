@@ -3,12 +3,12 @@ import { Typography, Box, useTheme } from "@mui/material";
 
 const Header = ({ title, subtitle }) => {
   return (
-    <Box mb="30px">
+    <Box>
       <Typography
         variant="h4"
         color={"#fff"}
         fontWeight="bold"
-        sx={{ mb: "5px" }}
+        sx={{ m: 0, p: 0 }}
       >
         {title}
       </Typography>
