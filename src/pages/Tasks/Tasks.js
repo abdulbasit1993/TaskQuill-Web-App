@@ -1,11 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./Tasks.css";
 import moment from "moment";
 import Header from "../../components/Header/Header";
 import { Box, Typography, Button } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { getUserTasks } from "../../redux/actions/taskAction";
 import { useNavigate } from "react-router-dom";
+import { apiService } from "../../services/apiService";
+import { GET_TASKS } from "../../constants/apiEndpoints";
+
+const temp_token = localStorage.getItem("token");
+const token = JSON.parse(temp_token);
+
+console.log("token (tasks) ===>>> ", token);
 
 const TaskTable = ({ data }) => {
   return (
@@ -34,29 +39,50 @@ const TaskTable = ({ data }) => {
 };
 
 const Tasks = () => {
-  const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
-  const token = useSelector((state) => state.loginReducer.data.token);
+  const [taskData, setTaskData] = useState([]);
 
-  const taskData = useSelector((state) => state.taskReducer.data);
+  console.log("tastaskData ===>>> ", taskData);
+
+  const getUserTasks = async () => {
+    try {
+      const response = await apiService.getCall(GET_TASKS, token);
+      console.log("response data tasks ===>> ", response);
+      setTaskData(response?.data?.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
-    dispatch(getUserTasks(token));
+    getUserTasks();
   }, []);
+
+  useEffect(() => {}, [taskData]);
 
   return (
     <Box m="20px" sx={{ backgroundColor: "#151828" }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" sx={{mb: 6}}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ mb: 6 }}
+      >
         <Header title="TASKS" subtitle="" />
 
-        <Button variant="outlined" sx={{color: '#FFF', border: '1px solid #FFF'}} onClick={() => navigate('/tasks/add')}>Add Task</Button>
+        <Button
+          variant="outlined"
+          sx={{ color: "#FFF", border: "1px solid #FFF" }}
+          onClick={() => navigate("/tasks/add")}
+        >
+          Add Task
+        </Button>
       </Box>
 
       <Box>
-        {taskData?.data?.length > 0 ? (
-          <TaskTable data={taskData?.data} />
+        {taskData?.length > 0 ? (
+          <TaskTable data={taskData} />
         ) : (
           <Box>
             <Typography

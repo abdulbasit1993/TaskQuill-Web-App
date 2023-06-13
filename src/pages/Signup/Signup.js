@@ -21,7 +21,6 @@ import { authService } from "../../services/authService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../components/Loader/Loader";
-import { useSelector } from "react-redux";
 
 const defaultTheme = createTheme();
 

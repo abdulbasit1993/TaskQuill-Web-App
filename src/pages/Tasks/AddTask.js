@@ -6,11 +6,13 @@ import { Box, Button, TextField, DateInput } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Header from "../../components/Header/Header";
 import DatePicker from "react-datepicker";
-import { useSelector } from "react-redux";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
 import "./AddTask.css";
+
+const temp_token = localStorage.getItem("token");
+const token = JSON.parse(temp_token);
 
 const AddTask = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -20,8 +22,6 @@ const AddTask = () => {
     description: "",
   });
   console.log(" file: AddTask.js:18 ~ AddTask ~ inputData:", inputData);
-
-  const token = useSelector((state) => state.loginReducer.data.token);
 
   const handleSubmit = async () => {
     console.log("selected date is ==>> ", selectedDate.toISOString());
