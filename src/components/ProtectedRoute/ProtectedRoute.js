@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 function ProtectedRoute(props) {
   const { Component } = props;
   const navigate = useNavigate();
 
-  const token = useSelector((state) => state.loginReducer.data.token);
+  const temp_token = localStorage.getItem("token");
+  const token = JSON.parse(temp_token);
 
   useEffect(() => {
     if (!token) {

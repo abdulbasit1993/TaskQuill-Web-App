@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Home, Login, Signup, UserProfile, Tasks, AddTask } from "./pages/index";
+import {
+  Home,
+  Login,
+  Signup,
+  UserProfile,
+  Tasks,
+  AddTask,
+} from "./pages/index";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
@@ -9,6 +16,9 @@ import { ToastContainer } from "react-toastify";
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
+
+  const temp_token = localStorage.getItem("token");
+  const token = JSON.parse(temp_token);
 
   // Function to handle authentication status
   const handleAuthentication = (isAuthenticated) => {
@@ -60,13 +70,16 @@ const App = () => {
 
   return (
     <Routes>
-      {authenticated ? (
+      {token ? (
         <Route
           path="*"
           element={
             <AuthenticatedLayout>
               <Routes>
-                <Route path="/" element={<ProtectedRoute Component={Home} />} />
+                <Route
+                  path="/home"
+                  element={<ProtectedRoute Component={Home} />}
+                />
                 <Route
                   path="/user/profile"
                   element={<ProtectedRoute Component={UserProfile} />}
@@ -75,7 +88,7 @@ const App = () => {
                   path="/tasks"
                   element={<ProtectedRoute Component={Tasks} />}
                 />
-                 <Route
+                <Route
                   path="/tasks/add"
                   element={<ProtectedRoute Component={AddTask} />}
                 />
@@ -89,10 +102,7 @@ const App = () => {
           element={
             <NonAuthenticatedLayout>
               <Routes>
-                <Route
-                  path="/"
-                  element={!authenticated && <Navigate to="/login" />}
-                />
+                <Route path="/" element={!token && <Navigate to="/login" />} />
                 <Route
                   path="/login"
                   element={<Login onAuthenticate={handleAuthentication} />}

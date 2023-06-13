@@ -23,36 +23,22 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../components/Loader/Loader";
 import { colors } from "../../constants/colors";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../redux/actions/authAction";
 
 const defaultTheme = createTheme();
 
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const Login = ({ onAuthenticate }) => {
-  const dispatch = useDispatch();
-
   const [data, setData] = useState({
     email: "",
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const loading = useSelector((state) => state.loginReducer.loading);
-
-  console.log("loading state ===>> ", loading);
-
-  const loginData = useSelector((state) => state.loginReducer.data);
-  console.log("loginData from selector ==>> ", loginData);
-
-  const loginError = useSelector(
-    (state) => state?.loginReducer?.error?.response?.data
-  );
-
-  const token = useSelector((state) => state.loginReducer.data.token);
-  // console.log("token (login) ==>> ", token);
+  const temp_token = localStorage.getItem("token");
+  const token = JSON.parse(temp_token);
 
   const navigate = useNavigate();
 
@@ -65,6 +51,7 @@ const Login = ({ onAuthenticate }) => {
   };
 
   const handleSubmit = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
 
     let email = data?.email.trim();
@@ -77,36 +64,46 @@ const Login = ({ onAuthenticate }) => {
 
     if (!email) {
       toast("Please enter your email", { type: "error" });
+      setIsLoading(false);
       return;
     }
 
     if (!password) {
       toast("Please enter your password", { type: "error" });
+      setIsLoading(false);
       return;
     }
 
     if (!data?.email.match(emailRegex)) {
       toast("Please enter a valid email", { type: "error" });
+      setIsLoading(false);
       return;
     }
 
-    await dispatch(loginUser(dataObj));
-
-    handleNavigation();
+    try {
+      const response = await authService.login(dataObj);
+      console.log("response data login ===>>> ", response?.data);
+      const tokenRes = response?.data?.token;
+      let tokenToStore = JSON.stringify(tokenRes);
+      localStorage.setItem("token", tokenToStore);
+      setIsLoading(false);
+      onAuthenticate(true);
+      handleNavigation();
+    } catch (e) {
+      console.log(e);
+      toast(e?.response?.data?.message, { type: "error" });
+      setIsLoading(false);
+    }
   };
 
   const handleNavigation = () => {
-    if (loginError) {
-      toast(loginError?.message, { type: "error" });
-      return;
-    }
-    navigate("/");
+    navigate("/home");
   };
 
   useEffect(() => {
     if (token) {
       onAuthenticate(true);
-      navigate("/");
+      navigate("/home");
     }
   }, []);
 
@@ -188,7 +185,7 @@ const Login = ({ onAuthenticate }) => {
 
             {/* ================= Login button ================= */}
 
-            {loading ? (
+            {isLoading ? (
               <div
                 style={{
                   display: "flex",

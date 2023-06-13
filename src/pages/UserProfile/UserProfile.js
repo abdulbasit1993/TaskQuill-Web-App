@@ -1,12 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import Header from "../../components/Header/Header";
-import { useDispatch, useSelector } from "react-redux";
 import userAvatar from "../../assets/images/user-avatar.png";
+import { apiService } from "../../services/apiService";
+import { GET_USER_PROFILE } from "../../constants/apiEndpoints";
 import "./UserProfile.css";
 
+const temp_token = localStorage.getItem("token");
+const token = JSON.parse(temp_token);
+
 const UserProfile = () => {
-  const userData = useSelector((state) => state.userProfileReducer.data.data);
+  const [userData, setUserData] = useState(null);
+
+  const getUserData = async () => {
+    try {
+      const response = await apiService.getCall(GET_USER_PROFILE, token);
+      console.log("response data user profile ===>> ", response?.data?.data);
+      setUserData(response?.data?.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   return (
     <Box m="20px" sx={{ backgroundColor: "#151828" }}>

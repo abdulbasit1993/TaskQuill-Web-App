@@ -4,9 +4,9 @@ import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import PersonOutlined from "@mui/icons-material/PersonOutlined";
+import TaskIcon from "@mui/icons-material/Task";
 import { MenuOutlined } from "@mui/icons-material";
 import userAvatar from "../../assets/images/user-avatar.png";
-import { useSelector } from "react-redux";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   // const theme = useTheme();
@@ -31,9 +31,6 @@ const Sidebar = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("User Profile");
-
-  const userData = useSelector((state) => state.userProfileReducer.data.data);
-  // console.log("userData from selector ===>> ", userData);
 
   return (
     <Box
@@ -87,30 +84,28 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <img
+                {/* <img
                   alt="profile-user"
                   width="100px"
                   height="100px"
                   src={userAvatar}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
+                /> */}
               </Box>
 
               <Box textAlign="center">
-                <Typography
+                {/* <Typography
                   variant="h5"
                   color={"gray"}
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  {userData
-                    ? userData?.firstName + " " + userData?.lastName
-                    : "Username"}
+                  {"Username"}
                 </Typography>
 
                 <Typography variant="h6" color={"blue"}>
-                  {userData ? userData?.roles[0] : "User type"}
-                </Typography>
+                  {"User type"}
+                </Typography> */}
               </Box>
             </Box>
           )}
@@ -127,7 +122,7 @@ const Sidebar = () => {
             <Item
               title="Tasks"
               to="/tasks"
-              icon={<PersonOutlined />}
+              icon={<TaskIcon />}
               selected={selected}
               setSelected={setSelected}
             />
