@@ -6,11 +6,11 @@ import { apiService } from "../../services/apiService";
 import { GET_USER_PROFILE } from "../../constants/apiEndpoints";
 import "./UserProfile.css";
 
-const temp_token = localStorage.getItem("token");
-const token = JSON.parse(temp_token);
-
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
+
+  const temp_token = localStorage.getItem("token");
+  const token = JSON.parse(temp_token);
 
   const getUserData = async () => {
     try {
@@ -23,8 +23,10 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    getUserData();
-  }, []);
+    if (token) {
+      getUserData();
+    }
+  }, [token]);
 
   return (
     <Box m="20px" sx={{ backgroundColor: "#151828" }}>

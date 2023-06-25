@@ -7,11 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { apiService } from "../../services/apiService";
 import { GET_TASKS } from "../../constants/apiEndpoints";
 
-const temp_token = localStorage.getItem("token");
-const token = JSON.parse(temp_token);
-
-console.log("token (tasks) ===>>> ", token);
-
 const TaskTable = ({ data }) => {
   return (
     <div>
@@ -42,8 +37,10 @@ const Tasks = () => {
   const navigate = useNavigate();
 
   const [taskData, setTaskData] = useState([]);
-
   console.log("tastaskData ===>>> ", taskData);
+
+  const temp_token = localStorage.getItem("token");
+  const token = JSON.parse(temp_token);
 
   const getUserTasks = async () => {
     try {
@@ -56,8 +53,10 @@ const Tasks = () => {
   };
 
   useEffect(() => {
-    getUserTasks();
-  }, []);
+    if (token) {
+      getUserTasks();
+    }
+  }, [token]);
 
   useEffect(() => {}, [taskData]);
 
