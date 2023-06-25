@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PersonOutlined from "@mui/icons-material/PersonOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
 import TaskIcon from "@mui/icons-material/Task";
 import { MenuOutlined } from "@mui/icons-material";
 import userAvatar from "../../assets/images/user-avatar.png";
@@ -29,8 +30,16 @@ const Sidebar = () => {
   // const theme = useTheme();
   // const colors = tokens(theme.palette.mode);
 
+  const navigate = useNavigate();
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("User Profile");
+
+  const handleLogout = () => {
+    console.log("logging out...");
+    localStorage.clear();
+    navigate("/login");
+  };
 
   return (
     <Box
@@ -126,6 +135,16 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
+            <Box
+              sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
+              onClick={() => handleLogout()}
+            >
+              <LogoutIcon />
+              <Typography variant="h6" sx={{ ml: 1.5 }}>
+                Logout
+              </Typography>
+            </Box>
           </Box>
         </Menu>
       </ProSidebar>
