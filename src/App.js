@@ -7,6 +7,7 @@ import {
   UserProfile,
   Tasks,
   AddTask,
+  EditProfile,
 } from "./pages/index";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import Topbar from "./scenes/global/Topbar";
@@ -19,6 +20,8 @@ const App = () => {
 
   const temp_token = localStorage.getItem("token");
   const token = JSON.parse(temp_token);
+
+  console.log("token ==> ", token);
 
   // Function to handle authentication status
   const handleAuthentication = (isAuthenticated) => {
@@ -36,9 +39,9 @@ const App = () => {
     localStorage.setItem("authenticated", JSON.stringify(authenticated));
   }, [authenticated]);
 
-  useEffect(() => {
-    console.log("auth state changed..", authenticated);
-  }, [authenticated]);
+  // useEffect(() => {
+  //   console.log("auth state changed..", authenticated);
+  // }, [authenticated]);
 
   const AuthenticatedLayout = ({ children }) => {
     return (
@@ -91,6 +94,10 @@ const App = () => {
                 <Route
                   path="/tasks/add"
                   element={<ProtectedRoute Component={AddTask} />}
+                />
+                <Route
+                  path="/user/profile/edit"
+                  element={<ProtectedRoute Component={EditProfile} />}
                 />
               </Routes>
             </AuthenticatedLayout>

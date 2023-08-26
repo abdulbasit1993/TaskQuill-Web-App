@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Box, Grid, Typography, Button } from "@mui/material";
 import Header from "../../components/Header/Header";
-import { useNavigate } from "react-router-dom";
 import userAvatar from "../../assets/images/user-avatar.png";
 import { apiService } from "../../services/apiService";
 import { GET_USER_PROFILE } from "../../constants/apiEndpoints";
-import "./UserProfile.css";
+import "./EditProfile.css";
 
-const UserProfile = () => {
-  const navigate = useNavigate();
+const EditProfile = () => {
   const [userData, setUserData] = useState(null);
 
   const temp_token = localStorage.getItem("token");
@@ -33,7 +31,7 @@ const UserProfile = () => {
   return (
     <Box m="20px" sx={{ backgroundColor: "#151828" }}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="USER PROFILE" subtitle="" />
+        <Header title="EDIT PROFILE" subtitle="" />
       </Box>
 
       <Box>
@@ -60,23 +58,6 @@ const UserProfile = () => {
           <Typography variant="h5" color="#FFF">
             {userData?.firstName + " " + userData?.lastName}
           </Typography>
-        </Box>
-
-        <Box
-          sx={{
-            alignItems: "center",
-            justifyContent: "center",
-            display: "flex",
-          }}
-          mb={3}
-        >
-          <Button
-            variant="outlined"
-            sx={{ color: "#FFF", border: "1px solid #FFF", width: "20%" }}
-            onClick={() => navigate("/user/profile/edit")}
-          >
-            Edit Profile
-          </Button>
         </Box>
 
         <Grid container spacing={2} sx={{ mt: 1 }} alignItems="center">
@@ -163,4 +144,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default EditProfile;
